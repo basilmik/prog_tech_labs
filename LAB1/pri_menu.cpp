@@ -36,7 +36,10 @@ int menu3()
 
 		case 5: //pop
 			if (*(Q->get_QSIZE_PTR()) != 0)
-				Q = Q->pub_pop();
+			{
+				if ((Q = Q->pub_pop()) == NULL)
+					return 0;
+			}
 			else
 				printf("cant do that with an empty q\n");
 			break;

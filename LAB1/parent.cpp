@@ -34,7 +34,7 @@ parentQ::parentQ()
 
 void parentQ::push() // add to q
 {
-	printf("push\n");
+	printf("push\n enter value: ");
 	PNODE newNode = new NODE;
 	if (newNode == NULL)
 		exit(-1);
@@ -70,6 +70,13 @@ parentQ* parentQ::pop() // take first from q
 		parentQ* prev = LHEAD;
 		if (prev == this)
 		{
+			if (LSIZE == 1)
+			{
+				printf("no q's left! exiting programm\n");
+				delete this;
+				return NULL;
+			}
+
 			parentQ* memo = LHEAD->LNEXT;
 			delete this;
 			LHEAD = memo;
@@ -85,6 +92,7 @@ parentQ* parentQ::pop() // take first from q
 			prev->LNEXT = memo;
 		}
 		printf("this q was all poped, deleted from list of q's\n");
+		LSIZE--;
 		return LHEAD;
 	}
 	else
@@ -101,22 +109,25 @@ void parentQ::printQ()
 
 	while (parent != NULL)
 	{
-		printf("\t'%d'\n", parent->val);
+		printf(" '%d' ", parent->val);
 		parent = parent->next;
 	}
-
+	printf("\n");
 }
-
+ 
 void parentQ::show_list()
 {
 	parentQ* parent = LHEAD;
 	int count = 1;
-	printf("show-list-of-q's\n");
+	printf("\tshow-list-of-q's\n");
+	if (LSIZE == 1 && QSIZE == 0)
+		printf("there's one empty q\n");
+	else
 	while (parent != NULL)
 	{
-		printf("%d)", count);
+		printf("\n%d) ", count);
 		parent->printQ();
-		printf("\n");
+		
 		count++;
 		parent = parent->LNEXT;
 	}
@@ -129,6 +140,7 @@ parentQ* parentQ::pickQ()
 	show_list();
 
 	int val;
+	printf("\nenter q's number: ");
 	while (1)
 	{
 		if (scanf("%d", &val) == 0 || val <= 0 || val > LSIZE)
@@ -148,36 +160,35 @@ parentQ* parentQ::pickQ()
 
 void parentQ::copyQ(parentQ* cpyQ)
 {
+	PNODE src = QHEAD->next;
+	PNODE* cpy = cpyQ->get_QLAST();
+	int* cpy_QSIZE = cpyQ->get_QSIZE_PTR();
 
-		PNODE src = QHEAD->next;
-		PNODE* cpy = cpyQ->get_QLAST();
-		int* cpy_QSIZE = cpyQ->get_QSIZE_PTR();
+	while (src != NULL)
+	{
+		PNODE new_node = new NODE;
+		if (new_node == NULL)
+			exit(-1);
 
-		while (src != NULL)
-		{
-			PNODE new_node = new NODE;
-			if (new_node == NULL)
-				exit(-1);
+		new_node->val = src->val;
+		new_node->next = NULL;
+		(*cpy)->next = new_node;
+		(*cpy) = new_node;
 
-			new_node->val = src->val;
-			new_node->next = NULL;
-			(*cpy)->next = new_node;
-			(*cpy) = new_node;
+		(*cpy_QSIZE)++;
 
-			(*cpy_QSIZE)++;
-
-			src = src->next;
-		}
-	
+		src = src->next;
+	}
+	printf("q is copied\n");
 }
 
 void parentQ::emergeQ(parentQ* emQ)
 {
 	printf("pick a q to emerge current with\nthere are %d q's\n", LSIZE-1);
 	show_list();
-	printf("new q\n");
+	printf("is the new q\n");
 
-	int val;
+	int val; printf("enter q's number: ");
 	while (1) {
 		if (scanf("%d", &val) == 0 || val <= 0 || val >= LSIZE)
 			printf("invalid input, try again\n");
@@ -228,7 +239,7 @@ void parentQ::emergeQ(parentQ* emQ)
 
 		src2 = src2->next;
 	}
-	
+	printf("emerged\n");
 }
 
 PNODE parentQ::get_QHEAD()
